@@ -11,4 +11,17 @@ def cesar_encode(text, shift):
             ciphered+=char
     return ciphered
 
-print(cesar_encode("dCode Caesar",4)) 
+def vigenere_encode(text, pasword):
+    ciphered=""
+    for idx, char in enumerate(text):
+        if char.isupper():
+            key = ord(char)+ord(key[idx])
+            ciphered+= chr(key) if key<=90 else chr((65+shift)-1)
+        elif char.islower():
+            key = ord(char)+ord(key[idx])
+            ciphered+= chr(key) if key<=122 else chr((97+shift)-1)
+        else:
+            ciphered+=char
+    return ciphered
+
+print(vigenere_encode("Moi C Noe", "azerty"))
