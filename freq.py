@@ -3,7 +3,7 @@
 import sys
 import getopt
 import unidecode
-
+import math
 def cesar_encode(text, shift):
     ciphered=""
     for letter in text:
@@ -64,6 +64,40 @@ def vigenere_decode(text, key):
         else:
             ciphered+=letter
     return ciphered
+
+def find_gcd(x, y):
+    x = math.gcd(x,y)
+    return x
+
+def gcd(dist):
+    num1 = dist[0]
+    num2 = dist[1]
+    gcd = find_gcd(num1,num2)
+    for i in range (2,len(dist)):
+        gcd=find_gcd(gcd,dist[i])
+    return gcd
+
+def findKeyLength(ciphered,length=3):
+    i = 0
+    dist = []
+    while i < len(ciphered):
+        rep = ciphered[i:i+length]
+        if len(rep)==length: 
+            for j in range (i,len(ciphered)): 
+                rep2 = ciphered[j:j+length]
+                if rep==rep2:
+                    dist.append(j-i)
+                    j = j + length + 1
+            i = i +1
+        i+=1
+    dist = [i for i in dist if i != 0]
+    key = gcd(dist)
+    if key == 1:
+        return findKeyLength(ciphered,length+1)
+    else:
+        return key
+
+
 
 def attack():
     pass
