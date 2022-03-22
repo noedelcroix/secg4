@@ -97,7 +97,27 @@ def findKeyLength(ciphered,length=3):
     else:
         return key
 
-
+def find_key (ciphered, key_length) :
+    english_frequency = [0.08167, 0.01492, 0.02782, 0.04253, 0.12702, 0.02228, 0.02015, 0.06094, 0.06966, 0.00153, 0.00772,
+                    0.04025, 0.02406, 0.06749, 0.07507, 0.01929, 0.00095, 0.05987, 0.06327, 0.09056, 0.02758, 0.00978,
+                    0.02360, 0.00150, 0.01974, 0.00074]
+    alphabet = "abcdefghijklmnopqrstuvwxyz"
+    ciphered= ciphered.lower()
+    key = ""
+    substrings = get_cesar_substring(ciphered,key_length)
+    for i in range (0,len(substrings)):
+        chis =[]
+        for j in range(0,len(alphabet)):
+            frequency = letter_frequency(substrings[i])
+            letter_count =0
+            for count in range(0,len(frequency)):
+                letter_count+=frequency[count]
+            chi = 0
+            for k in range (0,len(alphabet)):
+                chi+=math.pow((frequency[k]-(letter_count*english_frequency[k])),2)/(letter_count*english_frequency[k])
+                chis.append(chi)
+        key+=chr(int(min(chis)))
+    return key
 
 def attack():
     pass
