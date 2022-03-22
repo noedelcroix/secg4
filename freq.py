@@ -74,6 +74,9 @@ def getFrequency(string):
 
     return result
 
+def compareFreq():
+    pass
+
 def attack():
     pass
 
