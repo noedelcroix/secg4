@@ -102,7 +102,30 @@ def findKeyLength(ciphered,length=3):
         return key
 
 def findKeyLengthByNoe(ciphered):
-    pass
+    #decalage
+    lenKeys=[]
+    z=0
+    while(z <len(ciphered)):
+        correspondance=ciphered[z+1:].find(ciphered[z])+1
+        print(ciphered[z])
+        print(correspondance)
+        print("idx:"+str(z))
+        #print(ciphered[z])
+        #print(correspondance)
+        if(correspondance!=-1):
+            i=1
+            while(ciphered[z+i]==ciphered[correspondance+i]):
+                #print(ciphered[correspondance+i])
+                #print(ciphered[z+i])
+                i+=1
+            lenKeys.append(i)
+            z+=i
+        else:
+            z+=1
+
+    return lenKeys
+
+print(findKeyLengthByNoe("ZSW-FOKRFXESWZSWDIMAAIFCTBHEZWIA"))
 
 def attack():
     pass
@@ -156,5 +179,3 @@ def main():
             print("Command not found")
 
 #main()
-
-print(findKeyLengthByNoe())
