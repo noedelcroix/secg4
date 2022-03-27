@@ -1,7 +1,7 @@
 # secg4
 ## Authors :
-- 55990
-- 56212
+- 55990 : DELCROIX Noé
+- 56212 : ZELINSKI Piotr
 ## How to install dependencies :
 ### On Windows :
 Just type ```python -m pip install -r requirements.txt```
