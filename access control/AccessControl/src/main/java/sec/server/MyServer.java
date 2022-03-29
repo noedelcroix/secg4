@@ -64,6 +64,7 @@ public class MyServer extends BasicServer
             }
         });
 
+
         System.out.println("Handlers registered");
     }
 

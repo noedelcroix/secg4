@@ -3,13 +3,17 @@ package sec.server;
 import sec.common.BasicMessage;
 import sec.common.MsgType;
 import sec.common.TextMessage;
-
+import javax.crypto.spec.PBEKeySpec;
 import java.io.IOException;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.Random;
 
 public class ServerMain extends BasicServer
 {
     private final UserDB userDB;
+    private static final Random RANDOM = new Random();
 
     public ServerMain(int listeningPort, String filePath) throws IOException
     {
@@ -81,6 +85,19 @@ public class ServerMain extends BasicServer
             {
                 out.writeObject("Whatever");
             }
+        });
+        registerHandler(MsgType.REGISTER,(message, in, out)->{
+            TextMessage msg = (TextMessage) message;
+            String[] user= msg.getText().split(" ");
+            byte[] salt = new byte[16];
+            RANDOM.nextBytes(salt);
+            PBEKeySpec hashing = new PBEKeySpec(user[1].toCharArray(),salt,100);
+            UserDB.User userReg = new UserDB.User(user[0],hashing.getSalt(),
+                    Charset.forName("UTF-8").encode(CharBuffer.wrap(hashing.getPassword())).array());
+            if(userDB.add(userReg))
+                out.writeObject("Successfully added.");
+            else
+                out.writeObject("User already exists.");
         });
 
         System.out.println("Handlers registered");
