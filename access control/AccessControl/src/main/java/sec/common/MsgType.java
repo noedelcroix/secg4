@@ -5,5 +5,5 @@ public enum MsgType
     EXIT,
     FATHER,
     HELLO,
-    REGISTER
+    REGISTER 
 }
