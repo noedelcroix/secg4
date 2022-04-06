@@ -142,4 +142,6 @@ public class BasicServer implements AutoCloseable
             }
         }
     }
+
+    int getSocketHash(){return this.serv_socket.hashCode();}
 }

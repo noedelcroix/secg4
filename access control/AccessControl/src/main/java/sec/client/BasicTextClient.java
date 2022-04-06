@@ -1,20 +1,17 @@
 package sec.client;
 
-import java.awt.RenderingHints.Key;
 import sec.common.BasicMessage;
 import sec.common.MsgType;
 import sec.common.TextMessage;
 
-import java.io.EOFException;
+import java.io.*;
+import java.nio.file.Files;
+import java.security.*;
+import java.security.spec.EncodedKeySpec;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Scanner;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -25,20 +22,30 @@ public class BasicTextClient
 {
     String ip;
     int port;
+    private Key serverKey;
 
     public BasicTextClient(String ip, int port)
     {
         this.ip = ip;
         this.port = port;
+        try {
+            this.serverKey = getPublicKey();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Key getPublicKey() throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
+        File publicKeyFile = new File("server/public/public.key");
+        byte[] publicKeyBytes = Files.readAllBytes(publicKeyFile.toPath());
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicKeyBytes);
+        return keyFactory.generatePublic(publicKeySpec);
     }
 
     private String encryptPassword(String password) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException{
-        KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-        kpg.initialize(2048);
-        KeyPair kp = kpg.genKeyPair();
-        
         Cipher cipher = Cipher.getInstance("RSA");
-        cipher.init(Cipher.ENCRYPT_MODE, kp.getPublic());
+        cipher.init(Cipher.ENCRYPT_MODE, serverKey);
         return Base64.getEncoder().encodeToString(cipher.doFinal(password.getBytes()));
     }
     
@@ -50,7 +57,6 @@ public class BasicTextClient
              ObjectInputStream in =
                      new ObjectInputStream(socket.getInputStream()))
         {
-
             Scanner scanner = new Scanner(System.in);
             String line;
             System.out.print("> ");
@@ -63,12 +69,22 @@ public class BasicTextClient
                     MsgType msgType = MsgType.valueOf(
                             line.substring(0, sepIdx).toUpperCase());
                     String textData = line.substring(sepIdx + 1);
-                    if(msgType==MsgType.CREATE){
+                    if(msgType==MsgType.REGISTER){
                         String username = textData.substring(0, textData.indexOf(' '));
                         String password = textData.substring(textData.indexOf(' ')+1);
-                        
-                        textData=username+":"+encryptPassword(password);
+                        if(isPasswordValid(password))
+                            textData=username+" "+encryptPassword(password);
+                        else{
+                            System.out.println("Password length has to be between 6 and 8 and alphanumeric");
+                            continue;
+                        }
                     }
+                    if(msgType==MsgType.LOGIN){
+                        String username = textData.substring(0, textData.indexOf(' '));
+                        String password = textData.substring(textData.indexOf(' ')+1);
+                        textData=username+" "+encryptPassword(password);
+                    }
+                    textData+=" " + socket.getLocalPort();
                     out.writeObject(new TextMessage(textData, msgType));
                     out.flush();
                     System.out.println((String) in.readObject());
@@ -81,6 +97,7 @@ public class BasicTextClient
             }
             System.out.println("Graceful exit");
             out.writeObject(BasicMessage.EXIT_MSG);
+            out.writeObject(new TextMessage(socket.getLocalPort()+"",MsgType.EXIT));
         }
         catch (EOFException ex)
         {
@@ -90,5 +107,14 @@ public class BasicTextClient
         {
             ex.printStackTrace();
         }
+    }
+    private boolean isPasswordValid(String password) {
+        if (password == null) {
+            return false;
+        }
+        if (password.length() < 6 || password.length() > 8) {
+            return false;
+        }
+        return password.matches("^[a-zA-Z0-9]*$");
     }
 }
