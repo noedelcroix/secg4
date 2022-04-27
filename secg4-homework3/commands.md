@@ -1,14 +1,21 @@
+#Authors
+1. Piotr Smolinski - 56212
+2. Noé Delcroix - 55990
+
 # Exo 1
 
 ## Actor: be_education_authority
 
 ## cwd: be_education_authority/private/
 
-1. create the private key
+1. First at all, before creating a self-signed certificate, we have to create an ECDSA private key.
+
 ```
 # openssl ecparam -name prime256v1 -genkey -noout -out private-key.pem
 ```
+
 ## cwd : be_education_authority/public/
+
 2. create the certificate using the previously created private key
 ```
 # openssl req -new -x509 -key ../private/be_ea_key.pem -out be_ea_cert.pem -days 3650 
@@ -25,17 +32,19 @@ setup:
 
 ## Actor: central education authority
 ## cwd: central_education_authority/tmp/
-rename the certificate received from the belgian education authority to 'fingerprint'.pem 
-and moves(copies) it to the pubrepo/ directory
+
+Since the education authority accepted the DSC, it'll be stored in public repository with it's signature as its name.
 ```
 # cp be_ea_cert.pem ../pubrepo/$(openssl x509 -in be_ea_cert.pem -fingerprint -noout | cut -d= -f2 | tr -d ':').pem
 ```
 
 
 # Exo 3
-## Actor:
-```
+## Actor: HE2B School
+
+
 # cwd: he2b_school/
+```
 
 echo $'Smolinski\nPiotr\n56212\nBE\nHaute Ecole Bruxelles-Brabant\n2021-09-15\n2022-09-14'>56212.txt
 
@@ -45,7 +54,7 @@ echo $'Smolinski\nPiotr\n56212\nBE\nHaute Ecole Bruxelles-Brabant\n2021-09-15\n2
 # Exo 4
 setup:
 ```
-# cwd: /
+## cwd: /
 cp he2b_school/tmp/12345.txt be_education_authority/tmp/
 ```
 
@@ -75,7 +84,7 @@ cat 56212.{signature,fingerprint}.txt >> 56212.txt
 
 cp 56212.txt ../dpse/
 
-generating qr code
+
 
 ```
 
@@ -99,7 +108,7 @@ Retrieved fingerprint is used to find the certificate and generate the public ke
 
 With the generated public key we can proceed to verify the signature of the dpse file with the stored data.
 
-# openssl dgst -sha1 -verify tmp/56212_dpse_dsc_public_key.pem -signature tmp/56212_dpse_signature.txt tmp/56212_dpse_data.txt
+# openssl dgst -sha256 -verify tmp/56212_dpse_dsc_public_key.pem -signature tmp/56212_dpse_signature.txt tmp/56212_dpse_data.txt
 
 ```
 
