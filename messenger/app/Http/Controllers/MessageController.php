@@ -12,10 +12,9 @@ class MessageController{
     public static function getMessages($token,$user){
         return Message::getMessages($token,$user);
     }
-    public static function postMessage(Request $request){
+    public static function postMessage($token, $user, Request $request){
         $token = $request->post("token");
-        $receiver = $request->post("receiver");
-        return Message::getMessages($token,$user);
+        return Message::postMessage($token,$user);
     }
 
 }

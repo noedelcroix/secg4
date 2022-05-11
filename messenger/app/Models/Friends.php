@@ -14,7 +14,7 @@ class Friends{
     }
     public static function delFriend($token,$login){
         $user = \DB::select('select id from users where token = ?',[$token]);
-        $user = \DB::select('select id from users where login = ?',[$login]);
+        $friendsId = \DB::select('select id from users where login = ?',[$login]);
         \DB::delete('DELETE FROM friends WHERE user1 = ?',[$user[0]->id,$friendsId[0]->id]);
     }
 
