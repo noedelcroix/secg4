@@ -9,6 +9,10 @@ class MessageController{
     public static function getConversations($token){
         return Message::getConversations($token);
     }    
+    public static function createConversation($token, Request $request){
+        $user2 = $request->post("user2");
+        return Message::createConversation($token);
+    }
     public static function getMessages($token,$user){
         return Message::getMessages($token,$user);
     }
