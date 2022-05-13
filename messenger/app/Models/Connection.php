@@ -9,9 +9,8 @@ class Connection{
             $token = $p->generateToken(8);
             $user = \DB::select('select id from users where login = ?',[$login]);
             \DB::update('UPDATE users SET token = ? where id = ?', [$token,$user[0]->id]);
-
         } else {
-            // à voir ce que jdois t'envoyer
+            throw new Exception('auth failure');
         }
     }
     public static function deconnect($token){
