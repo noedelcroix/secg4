@@ -6,7 +6,7 @@ class Friends{
     public static function getFriends($token){
         $user = \DB::select('select id from users where token = ?',[$token]);
         $friends = \DB::select('select users.login from friends join users on friends.user2=users.id where user2 = ?',[$user[0]->id]);
-        return json_encode($friends);
+        return $friends;
     }
     public static function addFriend($token,$login){
         $user = \DB::select('select id from users where token = ?',[$token]);

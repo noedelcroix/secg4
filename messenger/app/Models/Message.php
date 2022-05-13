@@ -4,15 +4,14 @@ class Message{
     
     public static function getMessages($token, $user){
         return \DB::select('select sndr.login,rciver.login,content,date from messages join users sndr on messages.sender=sndr.id join 
-        users rciver on rciver.id=messages.receiver where (sndr.token = ? and rciver.login = ?) or (sndr.login = ? and rciver.token = ?) order by date desc',[$token,$user,$user,$token]);
+        users rciver on rciver.id=messages.receiver join friends fr on (fr.user1=sndr.id and fr.user2=rciver.id) where (sndr.token = ? and rciver.login = ?) or (sndr.login = ? and rciver.token = ?) order by date desc',[$token,$user,$user,$token]);
     }
 
     public static function postMessage($token,$receiver,$content){
         $user = \DB::select('select id from users where token = ?',[$token]);
+        $friends = \DB::select('select user1, user2 from friends join users on user2=users.id where users.login = ? and user1 = ?',[$receiver,$user[0]->id]);
+        if($friends.size())
         $date = date('d-m-y h:i:s');
         return $result = \DB::insert("INSERT INTO `messages`(sender,receiver,content,date) VALUES(?,?,?,?)",[$user[0]->id, $receiver,$content,$date]);
     }
-
-}
-
 ?>
