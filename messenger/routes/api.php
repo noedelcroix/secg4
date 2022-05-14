@@ -26,8 +26,10 @@ Route::post('/{token}/chat/{user}',[MessageController::class,'postMessage']);
 
 Route::get('/{token}/friends/',[FriendsController::class,'getFriends']);
 
-Route::post('/{token}/addfriend/',[FriendsController::class,'addFriend']);
+Route::get('/{token}/addfriend/',[FriendsController::class,'addFriend']);
 
-Route::post('/{token}/delfriend/',[FriendsController::class,'delFriend']);
+Route::get('/{token}/delfriend/',[FriendsController::class,'delFriend']);
+
+Route::get('/{token}/getonlinefriends/',[FriendsController::class,'getOnlineFriends']);
 
 

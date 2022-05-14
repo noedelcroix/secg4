@@ -26,11 +26,9 @@ class FriendsController{
         return response()->json($response);
     }
     
-    public static function addFriend(Request $request){
+    public static function addFriend($token,$login){
         $response =null;
         try {
-            $token = $request->post("token");
-            $login = $request->post("login");
             $response=Friends::addFriend($token,$login);     
            } catch (Exception $ex) {
             return response()->json(false, 500);
@@ -38,9 +36,8 @@ class FriendsController{
         return response()->json($response);
     }
 
-    public static function delFriend($token,Request $request){
+    public static function delFriend($token,$login){
         try {
-            $login = $request->post("login");
             Friends::delFriend($token,$login); 
         } catch (Exception $ex) {
             return response()->json(false, 500);
