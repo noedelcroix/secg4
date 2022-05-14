@@ -15,6 +15,9 @@ class Connection{
     }
     public static function deconnect($token){
         $user = \DB::select('select id from users where token = ?',[$token]);
+        if(count($user)==0){
+            throw new Exception('no token found');
+        }
         \DB::update('UPDATE users SET token = NULL where id = ?'[$user[0]->id]);
     }
     public static function newUser($login, $pwd){

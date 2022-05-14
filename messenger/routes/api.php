@@ -16,14 +16,18 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/auth',[ConnectionController::class,'auth']);
 
-
 Route::post('/createaccount',[ConnectionController::class,'newUser']);
 
+Route::get('{token}/deconnect',[ConnectionController::class,'deconnect']);
 
 Route::get('/{token}/chat/{user}',[MessageController::class,'getMessages']);
 
-
 Route::post('/{token}/chat/{user}',[MessageController::class,'postMessage']);
 
-
 Route::get('/{token}/friends/',[FriendsController::class,'getFriends']);
+
+Route::post('/{token}/addfriend/',[FriendsController::class,'addFriend']);
+
+Route::post('/{token}/delfriend/',[FriendsController::class,'delFriend']);
+
+

@@ -7,23 +7,46 @@ use Illuminate\Http\Request;
 class FriendsController{
 
     public static function getFriends($token){
-        return Friends::getFriends($token);
+        $response=null;
+        try {
+            $response = Friends::getFriends($token);
+        } catch (Exception $ex) {
+            return response()->json(false, 500);
+        }
+        return response()->json($response);
     }
     
     public static function getOnlineFriends($token){
-        return Friends::getOnlineFriends($token);
+        $response=null;
+        try {
+            $response =  Friends::getOnlineFriends($token);
+        } catch (Exception $ex) {
+            return response()->json(false, 500);
+        }
+        return response()->json($response);
     }
     
     public static function addFriend(Request $request){
-        $token = $request->post("token");
-        $login = $request->post("login");
-        return Friends::addFriend($token,$login);
+        $response =null;
+        try {
+            $token = $request->post("token");
+            $login = $request->post("login");
+            $response=Friends::addFriend($token,$login);     
+           } catch (Exception $ex) {
+            return response()->json(false, 500);
+        }        
+        return response()->json($response);
     }
 
-    public static function delFriend(Request $request){
-        $token = $request->post("token");
-        $login = $request->post("login");
-        return Friends::delFriend($token,$login);
+    public static function delFriend($token,Request $request){
+        try {
+            $login = $request->post("login");
+            Friends::delFriend($token,$login); 
+        } catch (Exception $ex) {
+            return response()->json(false, 500);
+        }     
+        return response()->json(false, 201);   
+        
         
     }
 

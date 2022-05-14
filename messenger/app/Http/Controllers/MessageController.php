@@ -6,19 +6,25 @@ use Illuminate\Http\Request;
 
 class MessageController{
 
-    public static function getConversations($token){
-        return Message::getConversations($token);
-    }    
-    public static function createConversation($token, Request $request){
-        $user2 = $request->post("user2");
-        return Message::createConversation($token);
-    }
+
     public static function getMessages($token,$user){
-        return Message::getMessages($token,$user);
+        $response=null;
+        try {
+            $response=Message::getMessages($token,$user);
+        } catch (Exception $ex) {
+            return response()->json(false, 500);
+        }
+        return response()->json($response);
     }
     public static function postMessage($token, $user, Request $request){
-        $token = $request->post("token");
-        return Message::postMessage($token,$user);
+        try {
+            $content = $request->post("content");
+            Message::postMessage($token,$user,$content);
+        } catch (Exception $ex) {
+            return response()->json(false, 500);
+        }
+        return response()->json(true, 201);
+
     }
 
 }
