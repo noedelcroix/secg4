@@ -11,16 +11,18 @@ class Friends{
         $friends = \DB::select('select users.login from friends join users on friends.user2=users.id where user2 = ?',[$user[0]->id]);
         return $friends;
     }
-    public static function addFriend($token,$login){
-        $user = \DB::select('select id from users where token = ?',[$token]);
+    public static function addFriend($login, $token){
+        $user = \DB::select("select id from users where token =?",[$token]);
+        error_log(count($user));
         if(count($user)==0){
+            
             throw new Exception('no token found');
         }
         $friendsId = \DB::select('select id from users where login = ?',[$login]);
         if(count($friendsId)==0){
             throw new Exception('no friend found');
         }
-        $result = \DB::insert("INSERT INTO `friends`(user1,user2) VALUES(?,?)",[$user[0]->id, $login]);
+        $result = \DB::insert("INSERT INTO `friends`(user1,user2) VALUES(?,?)",[$user[0]->id, $friendsId[0]->id]);
     }
     public static function delFriend($token,$login){
         $user = \DB::select('select id from users where token = ?',[$token]);

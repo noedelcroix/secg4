@@ -10,8 +10,9 @@ class ConnectionController{
         $login = $request->post("login");
         $pswd = $request->post("pswd");
         $response =Connection::auth($login,$pswd);
-        return response()->json($response);
+        return response()->json(["token"=> $response]);
     }
+
     public static function newUser(Request $request){
         $login = $request->post('login');
         $pswd = $request->post("pswd");
@@ -23,7 +24,9 @@ class ConnectionController{
         }
         return response()->json($response);
     }
-    public static function deconnect($token){
+
+    public static function deconnect(){
+        $login = $request->get("token");
         try {
             Connection::deconnect($token);
         } catch (Exception $e) {

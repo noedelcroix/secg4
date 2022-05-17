@@ -1,14 +1,16 @@
 <?php
 namespace App\Models;
 
+use Illuminate\Support\Str;
+
 class Connection{
     public static function auth($login,$pswd){
         $checkPswd = \DB::select('select password from users where login = ?',[$login]);
         if (password_verify($pswd, $checkPswd[0]->password)) {
-            $p = new OAuthProvider();
-            $token = $p->generateToken(8);
+            $token = (String) Str::uuid();
             $user = \DB::select('select id from users where login = ?',[$login]);
             \DB::update('UPDATE users SET token = ? where id = ?', [$token,$user[0]->id]);
+            return $token;
         } else {
             throw new Exception('auth failure');
         }

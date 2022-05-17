@@ -26,10 +26,11 @@ class FriendsController{
         return response()->json($response);
     }
     
-    public static function addFriend($token,$login){
+    public static function addFriend($login, $token){
+        
         $response =null;
         try {
-            $response=Friends::addFriend($token,$login);     
+            $response=Friends::addFriend($login, $token);     
            } catch (Exception $ex) {
             return response()->json(false, 500);
         }        
