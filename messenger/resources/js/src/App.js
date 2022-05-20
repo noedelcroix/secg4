@@ -9,7 +9,7 @@ import "./css/global.css";
 function App() {
   return (
     <Login>
-      <h1>Logged</h1>
+      <h1>Login</h1>
       <ConversationList />
     </Login>
   );

@@ -18,18 +18,20 @@ Route::post('/auth',[ConnectionController::class,'auth']);
 
 Route::post('/createaccount',[ConnectionController::class,'newUser']);
 
-Route::get('/deconnect',[ConnectionController::class,'deconnect']);
+Route::get('/deconnect/{token}',[ConnectionController::class,'deconnect']);
 
 Route::get('/chat/{user}',[MessageController::class,'getMessages']);
 
 Route::post('/chat/{user}',[MessageController::class,'postMessage']);
 
-Route::get('/friends/',[FriendsController::class,'getFriends']);
-
 Route::get('/addfriend/{user}/{token}',[FriendsController::class,'addFriend']);
-
-Route::get('/delfriend/',[FriendsController::class,'delFriend']);
 
 Route::get('/getonlinefriends/{token}',[FriendsController::class,'getOnlineFriends']);
 
 Route::get('/getfriends/{token}',[FriendsController::class,'getFriends']);
+
+Route::get('/getpendinginvitations/{token}',[FriendsController::class,'getPendingInvitations']);
+
+Route::get('/getpublickey/{login}',[ConnectionController::class,'getKey']);
+
+Route::post('/stockpublickey',[ConnectionController::class,'stockPublicKey']);

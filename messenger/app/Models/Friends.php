@@ -41,6 +41,13 @@ class Friends{
             throw new Exception('no token found');
         }
         return \DB::select('select users.login from users join friends on users.id=friends.user2 where friends.user1=?',[$user[0]->id]);
+    }
+    public static function getPendingInvitations($token){
+        $user = \DB::select('select id from users where token = ?',[$token]);
+        if(count($user)==0){
+            throw new Exception('no token found');
+        }
+        return \DB::select('select users.login from users join friends on users.id=friends.user1 where friends.user2=? AND friends.user1!= ?' ,[$user[0]->id, $user[0]->id]);
 
     }
 

@@ -25,8 +25,7 @@ class ConnectionController{
         return response()->json($response);
     }
 
-    public static function deconnect(){
-        $login = $request->get("token");
+    public static function deconnect($token){
         try {
             Connection::deconnect($token);
         } catch (Exception $e) {
@@ -35,5 +34,22 @@ class ConnectionController{
         return response()->json(true, 201);
 
     }
-
+    public static function stockPublicKey(Request $request){
+        $token = $request->post('token');
+        $key = $request->post('key');
+        try {
+            Connection::stockPublicKey($token,$key); 
+        } catch (Exception $ex) {
+            return response()->json(false, 500);
+        }     
+        return response()->json(false, 201);   
+    }
+    public static function getKey($login){
+        try {
+            Connection::getKey($login);
+        } catch (Exception $e) {
+            return response()->json(false, 500);
+        }
+        return response()->json(true, 201);
+    }
 }
