@@ -47,5 +47,13 @@ class FriendsController{
         
         
     }
-
+    public static function getPendingInvitations($token){
+        $response=null;
+        try {
+            $response =  Friends::getPendingInvitations($token);
+        } catch (Exception $ex) {
+            return response()->json(false, 500);
+        }
+        return response()->json($response);
+    }
 }

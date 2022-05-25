@@ -2218,10 +2218,17 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function App() {
+<<<<<<< HEAD
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_components_Header__WEBPACK_IMPORTED_MODULE_4__["default"], {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_components_Login__WEBPACK_IMPORTED_MODULE_3__["default"], {
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_components_ConversationList__WEBPACK_IMPORTED_MODULE_2__["default"], {})
     })]
+=======
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_components_Login__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h1", {
+      children: "Login"
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_components_ConversationList__WEBPACK_IMPORTED_MODULE_2__["default"], {})]
+>>>>>>> 88b2885aa9fdfa6cad11557ad55a5a283fb2f37b
   });
 }
 
@@ -2592,7 +2599,11 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans&display=swap);"]);
 // Module
+<<<<<<< HEAD
 ___CSS_LOADER_EXPORT___.push([module.id, "* {\n  padding: 0;\n  margin: 0;\n  font-family: \"Plus Jakarta Sans\", sans-serif;\n}\n\nheader {\n  height: 20vh;\n  background-color: deepskyblue;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: 0 5%;\n}\nheader h1 {\n  color: ivory;\n  font-size: 2.5rem;\n}\n\nform {\n  margin: 5%;\n  padding: 5%;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  border: solid 5px deepskyblue;\n  border-radius: 15px;\n}\nform input {\n  width: 20%;\n}", ""]);
+=======
+___CSS_LOADER_EXPORT___.push([module.id, "form{\r\n    display: flex;\r\n}", ""]);
+>>>>>>> 88b2885aa9fdfa6cad11557ad55a5a283fb2f37b
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

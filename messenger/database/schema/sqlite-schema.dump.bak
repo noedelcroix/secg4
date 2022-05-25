@@ -22,11 +22,5 @@ CREATE TABLE IF NOT EXISTS "messages" (
 	FOREIGN KEY("sender") REFERENCES "users"("id"),
 	PRIMARY KEY("id" AUTOINCREMENT)
 );
-CREATE TABLE IF NOT EXISTS "user_keys" (
-	"id"	NUMERIC,
-	"public_key"	TEXT,
-	FOREIGN KEY("id") REFERENCES "users"("id"),
-	PRIMARY KEY("id")
-);
 CREATE TABLE IF NOT EXISTS "migrations" ("id" integer not null primary key autoincrement, "migration" varchar not null, "batch" integer not null);
 
