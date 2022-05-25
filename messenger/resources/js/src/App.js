@@ -3,15 +3,18 @@ import ReactDOM from 'react-dom';
 
 import ConversationList from "./components/ConversationList";
 import Login from "./components/Login";
+import Header from "./components/Header";
 
-import "./css/global.css";
+import "./css/global.scss";
 
 function App() {
   return (
+    <>
+    <Header />
     <Login>
-      <h1>Logged</h1>
       <ConversationList />
     </Login>
+    </>
   );
 }
 

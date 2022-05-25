@@ -2,7 +2,7 @@
 ## Run production
 ```bash
 docker build . -t messenger
-docker run -dp 80:80 -p 443:443 messenger
+docker run -dp 80:80 -p 443:443 --mount type=bind,source="$(pwd)"/database,target=/messenger/database messenger
 ```
 
 ## Run dev
