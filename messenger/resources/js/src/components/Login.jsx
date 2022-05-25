@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import axios from "axios";
 import $ from "jquery";
@@ -15,6 +15,24 @@ export default function Login(props){
         setToken(null);
     }
 
+    useEffect(()=>{
+        genKeyPair();
+    }, [])
+
+    const genKeyPair = async function () {
+        const keyPair = await window.crypto.subtle.generateKey({
+                name: "ECDH",
+                namedCurve: "P-256",
+            },
+            true,
+            ["deriveKey"]
+        );
+        window.crypto.subtle.exportKey("jwk", keyPair.publicKey)
+            .then(e => localStorage.setItem("public_key", JSON.stringify(e)));
+        window.crypto.subtle.exportKey("jwk", keyPair.privateKey)
+            .then(e => localStorage.setItem("private_key", JSON.stringify(e)));
+    };
+
     const submit = async (e)=>{
         e.preventDefault();
 
@@ -29,6 +47,11 @@ export default function Login(props){
                 alert("Enregistrement réussi.");
             }
         }).catch(()=>alert("Une erreur s'est produite. Veuillez réessayer plus tard."));
+
+        await axios.post(`/api/publickey`, {
+            token: token,
+            key: localStorage.getItem("public_key")
+        }).then(()=>console.log("clé envoyée.")).catch((e)=>console.log(e))
 
     }
 

@@ -1,8 +1,11 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
 
+import Chat from "./Chat";
+
 export default function ConversationList(props){
     const [conversations, setConversations] = useState([]);
+    const [conversationList, setConversationList] = useState(null);
     useEffect(()=>refresh(), [])
 
     const refresh = ()=>{
@@ -18,10 +21,15 @@ export default function ConversationList(props){
         axios(`/api/addfriend/${user}/${window.token}`).then(()=>alert("Demande envoyée")).catch((e)=>alert("Une erreur est survenue..."));
     }
 
-    return <>
+    return (
+    <>
+    {!conversationList?
+     <>
     {conversations.map((conversation, idx)=>
-        <p key={idx}>{conversation.login}</p>
+        <p key={idx} onClick={()=>setConversationList(conversation.login)}>{conversation.login}</p>
     )}
     <input type="button" onClick={()=>addFriend()} value="Add" />
-    </>
+    </> : <Chat user={conversationList} />
+    }</>
+    );
 }

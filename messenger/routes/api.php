@@ -32,6 +32,6 @@ Route::get('/getfriends/{token}',[FriendsController::class,'getFriends']);
 
 Route::get('/getpendinginvitations/{token}',[FriendsController::class,'getPendingInvitations']);
 
-Route::get('/getpublickey/{login}',[ConnectionController::class,'getKey']);
+Route::get('/publickey/{login}',[ConnectionController::class,'getKey']);
 
-Route::post('/stockpublickey',[ConnectionController::class,'stockPublicKey']);
+Route::post('/publickey',[ConnectionController::class,'stockPublicKey']);

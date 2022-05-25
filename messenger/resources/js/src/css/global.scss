@@ -34,3 +34,13 @@ form{
         width: 20%;
     }
 }
+
+#pendingInvitationsMenu{
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    width: 20vw;
+    height: 80vh;
+    background-color: deepskyblue;
+    opacity: 0.8;
+}

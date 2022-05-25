@@ -8,7 +8,7 @@ class Friends{
         if(count($user)==0){
             throw new Exception('no token found');
         }
-        $friends = \DB::select('select users.login from friends join users on friends.user2=users.id where user2 = ?',[$user[0]->id]);
+        $friends = \DB::select('select users.login from friends join users on friends.user2=users.id where friends.user1=?',[$user[0]->id]);
         return $friends;
     }
     public static function addFriend($login, $token){
@@ -47,8 +47,7 @@ class Friends{
         if(count($user)==0){
             throw new Exception('no token found');
         }
-        return \DB::select('select users.login from users join friends on users.id=friends.user1 where friends.user2=? AND friends.user1!= ?' ,[$user[0]->id, $user[0]->id]);
-
+        return \DB::select(' select users.login from friends join users on friends.user1=users.id where ? not in (select user1 from friends)' ,[$user[0]->id]);
     }
 
 }

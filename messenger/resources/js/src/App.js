@@ -6,12 +6,14 @@ import Login from "./components/Login";
 import Header from "./components/Header";
 
 import "./css/global.scss";
+import PendingInvitationsMenu from './components/PendingInvitationsMenu';
 
 function App() {
   return (
     <>
     <Header />
     <Login>
+      <PendingInvitationsMenu />
       <ConversationList />
     </Login>
     </>
