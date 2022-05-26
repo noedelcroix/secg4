@@ -5,12 +5,13 @@ use Illuminate\Support\Str;
 
 class Connection{
     public static function auth($login,$pswd){
-        $checkPswd = \DB::select('select password,id from users where login = ?',[$login]);
-        if (password_verify($pswd, $checkPswd[0]->password)) {
+        $checkPswd = \DB::select('select password,id, errors from users where login = ?',[$login]);
+        if ($checkPswd[0]->errors <= 3 && password_verify($pswd, $checkPswd[0]->password)) {
             $token = (String) Str::uuid();
-            \DB::update('UPDATE users SET token = ? where id = ?', [$token,$checkPswd[0]->id]);
+            \DB::update('UPDATE users SET errors=0, token = ? where id = ?', [$token,$checkPswd[0]->id]);
             return $token;
         } else {
+            \DB::update('update users set errors = ? where login = ?', [$checkPswd[0]->errors+1, $login]);
             throw new Exception('auth failure');
         }
     }
