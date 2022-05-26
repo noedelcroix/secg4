@@ -44,7 +44,7 @@ class Connection{
         if(count($user)==0){
             throw new Exception('no token found');
         }
-        $key = \DB::select('select  from user_keys where id = ?',[$user[0]->id]);
+        $key = \DB::select('select public_key from user_keys where id = ?',[$user[0]->id]);
         return $key;
     }
 

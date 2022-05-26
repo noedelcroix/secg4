@@ -46,10 +46,10 @@ class ConnectionController{
     }
     public static function getKey($login){
         try {
-            Connection::getKey($login);
+            return Connection::getKey($login);
         } catch (Exception $e) {
             return response()->json(false, 500);
         }
-        return response()->json(true, 201);
+        //return response()->json(true, 201);
     }
 }

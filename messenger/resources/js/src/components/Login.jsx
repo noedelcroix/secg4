@@ -49,16 +49,16 @@ export default function Login(props){
         }).catch(()=>alert("Une erreur s'est produite. Veuillez réessayer plus tard."));
 
         await axios.post(`/api/publickey`, {
-            token: token,
+            token: window.token,
             key: localStorage.getItem("public_key")
-        }).then(()=>console.log("clé envoyée.")).catch((e)=>console.log(e))
+        }).then(()=>console.log("clé envoyée.")).catch((e)=>{})
 
     }
 
         return( 
         token==null ?
         <>
-        <form onSubmit={(e)=>submit(e)}>
+        <form onSubmit={(e)=>submit(e)} id="loginForm">
             <input type="text" placeholder="username" name="username" required id="username" />
             <input type="password" placeholder="password" name="password" required id="password" />
             <input type="submit" value="Send" />

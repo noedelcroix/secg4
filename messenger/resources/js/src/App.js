@@ -5,7 +5,7 @@ import ConversationList from "./components/ConversationList";
 import Login from "./components/Login";
 import Header from "./components/Header";
 
-import "./css/global.scss";
+import "./css/global.sass";
 import PendingInvitationsMenu from './components/PendingInvitationsMenu';
 
 function App() {

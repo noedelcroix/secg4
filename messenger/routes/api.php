@@ -20,9 +20,9 @@ Route::post('/createaccount',[ConnectionController::class,'newUser']);
 
 Route::get('/deconnect/{token}',[ConnectionController::class,'deconnect']);
 
-Route::get('/chat/{user}',[MessageController::class,'getMessages']);
+Route::get('/chat/{user}/{token}',[MessageController::class,'getMessages']);
 
-Route::post('/chat/{user}',[MessageController::class,'postMessage']);
+Route::post('/chat/{user}/{token}',[MessageController::class,'postMessage']);
 
 Route::get('/addfriend/{user}/{token}',[FriendsController::class,'addFriend']);
 

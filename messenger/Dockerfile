@@ -44,10 +44,11 @@ RUN chown -R www-data:www-data /messenger
 RUN chown -R www-data:www-data /messenger
 
 RUN php /usr/local/bin/composer install && npm install
-RUN if  ! test -f database/database.sqlite; then touch database/database.sqlite && php artisan migrate:refresh; fi
+RUN if  ! test -f /messenger/database/database.sqlite; then touch /messenger/database/database.sqlite; php artisan migrate:refresh; fi
 RUN npm run dev
 
 RUN chown www-data:www-data /messenger/database/database.sqlite
+RUN chmod 777 /messenger/database/database.sqlite
 
 RUN a2dissite 000-default
 RUN a2enmod rewrite

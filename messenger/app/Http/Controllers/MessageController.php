@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class MessageController{
 
 
-    public static function getMessages($token,$user){
+    public static function getMessages($user,$token){
         $response=null;
         try {
             $response=Message::getMessages($token,$user);
@@ -16,7 +16,7 @@ class MessageController{
         }
         return response()->json($response);
     }
-    public static function postMessage($token, $user, Request $request){
+    public static function postMessage($user, $token, Request $request){
         try {
             $content = $request->post("content");
             Message::postMessage($token,$user,$content);
