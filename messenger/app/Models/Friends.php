@@ -47,7 +47,7 @@ class Friends{
         if(count($user)==0){
             throw new Exception('no token found');
         }
-        return \DB::select(' select users.login from friends join users on friends.user1=users.id where ? not in (select user1 from friends)' ,[$user[0]->id]);
+        return \DB::select('SELECT u.login from friends f JOIN users u ON u.id=f.user1 where f.user2=? AND ? not in (SELECT user1 from friends where user2=f.user1);' ,[$user[0]->id, $user[0]->id]);
     }
 
 }

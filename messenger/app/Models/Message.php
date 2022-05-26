@@ -9,7 +9,7 @@ class Message{
         }
         $friends = \DB::select('select user1, user2 from friends join users on user2=users.id where users.login = ? and user1 = ?',[$user,$user2[0]->id]);
         if(count($friends)!=0)
-            return \DB::select('select sndr.login,rciver.login,content,date from messages join users sndr on messages.sender=sndr.id join 
+            return \DB::select('select messages.id, sndr.login,rciver.login,content,date from messages join users sndr on messages.sender=sndr.id join 
             users rciver on rciver.id=messages.receiver join friends fr on (fr.user1=sndr.id and fr.user2=rciver.id) where (sndr.token = ? and rciver.login = ?) or (sndr.login = ? and rciver.token = ?) order by date desc',[$token,$user,$user,$token]);
         else
             throw new Exception('no friend found');

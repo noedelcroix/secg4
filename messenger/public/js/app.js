@@ -2255,6 +2255,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var base64_arraybuffer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! base64-arraybuffer */ "./node_modules/base64-arraybuffer/dist/base64-arraybuffer.es5.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -2296,8 +2304,9 @@ function Chat(props) {
   var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)([]),
       _useState6 = _slicedToArray(_useState5, 2),
       encryptedMessages = _useState6[0],
-      setEncryptedMessages = _useState6[1]; //get Derived Key
+      setEncryptedMessages = _useState6[1];
 
+  jquery__WEBPACK_IMPORTED_MODULE_3___default()("#listmessages").on(); //get Derived Key
 
   (0,react__WEBPACK_IMPORTED_MODULE_2__.useEffect)( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
@@ -2356,21 +2365,20 @@ function Chat(props) {
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
-              console.log("here");
-              _context3.next = 3;
+              _context3.next = 2;
               return axios__WEBPACK_IMPORTED_MODULE_1___default()("/api/chat/".concat(props.user, "/").concat(window.token));
 
-            case 3:
+            case 2:
               data = _context3.sent;
-              _context3.next = 6;
+              _context3.next = 5;
               return setEncryptedMessages(data.data);
 
-            case 6:
+            case 5:
               setTimeout(function () {
                 return refreshMessages();
-              }, 10000);
+              }, 1000);
 
-            case 7:
+            case 6:
             case "end":
               return _context3.stop();
           }
@@ -2384,60 +2392,90 @@ function Chat(props) {
   }(); //decrypt encrypted Messages
 
 
-  (0,react__WEBPACK_IMPORTED_MODULE_2__.useEffect)(function () {
-    var result = [];
-    encryptedMessages.map( /*#__PURE__*/function () {
-      var _ref4 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4(element) {
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
-          while (1) {
-            switch (_context4.prev = _context4.next) {
-              case 0:
-                _context4.next = 2;
-                return decryptMessage(JSON.parse(element.content), derivedKey);
+  (0,react__WEBPACK_IMPORTED_MODULE_2__.useEffect)( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee5() {
+    var result;
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            _context5.next = 2;
+            return Promise.all(encryptedMessages.map( /*#__PURE__*/function () {
+              var _ref5 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4(element) {
+                return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
+                  while (1) {
+                    switch (_context4.prev = _context4.next) {
+                      case 0:
+                        if (!(messages.filter(function (e) {
+                          return e.id == element.id;
+                        }).length == 0)) {
+                          _context4.next = 7;
+                          break;
+                        }
 
-              case 2:
-                element.content = _context4.sent;
-                result.push(element);
+                        _context4.next = 3;
+                        return decryptMessage(JSON.parse(element.content), derivedKey);
 
-              case 4:
-              case "end":
-                return _context4.stop();
-            }
-          }
-        }, _callee4);
-      }));
+                      case 3:
+                        element.content = _context4.sent;
+                        return _context4.abrupt("return", element);
 
-      return function (_x2) {
-        return _ref4.apply(this, arguments);
-      };
-    }());
-    setMessages(result);
-  }, [encryptedMessages]);
+                      case 7:
+                        return _context4.abrupt("return", null);
+
+                      case 8:
+                      case "end":
+                        return _context4.stop();
+                    }
+                  }
+                }, _callee4);
+              }));
+
+              return function (_x2) {
+                return _ref5.apply(this, arguments);
+              };
+            }()).filter(function (element) {
+              return element !== null;
+            }));
+
+          case 2:
+            result = _context5.sent.filter(function (element) {
+              return element !== null;
+            });
+            console.log(result);
+            if (result.length > 0) setMessages([].concat(_toConsumableArray(messages), _toConsumableArray(result)));
+
+          case 5:
+          case "end":
+            return _context5.stop();
+        }
+      }
+    }, _callee5);
+  })), [encryptedMessages]);
 
   var deriveKey = /*#__PURE__*/function () {
-    var _ref5 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee5(publicKeyJwk, privateKeyJwk) {
+    var _ref6 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee6(publicKeyJwk, privateKeyJwk) {
       var publicKey, privateKey;
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee5$(_context5) {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee6$(_context6) {
         while (1) {
-          switch (_context5.prev = _context5.next) {
+          switch (_context6.prev = _context6.next) {
             case 0:
-              _context5.next = 2;
+              _context6.next = 2;
               return window.crypto.subtle.importKey("jwk", publicKeyJwk, {
                 name: "ECDH",
                 namedCurve: "P-256"
               }, true, []);
 
             case 2:
-              publicKey = _context5.sent;
-              _context5.next = 5;
+              publicKey = _context6.sent;
+              _context6.next = 5;
               return window.crypto.subtle.importKey("jwk", privateKeyJwk, {
                 name: "ECDH",
                 namedCurve: "P-256"
               }, true, ["deriveKey"]);
 
             case 5:
-              privateKey = _context5.sent;
-              _context5.next = 8;
+              privateKey = _context6.sent;
+              _context6.next = 8;
               return window.crypto.subtle.deriveKey({
                 name: "ECDH",
                 "public": publicKey
@@ -2447,44 +2485,9 @@ function Chat(props) {
               }, true, ["encrypt", "decrypt"]);
 
             case 8:
-              return _context5.abrupt("return", _context5.sent);
+              return _context6.abrupt("return", _context6.sent);
 
             case 9:
-            case "end":
-              return _context5.stop();
-          }
-        }
-      }, _callee5);
-    }));
-
-    return function deriveKey(_x3, _x4) {
-      return _ref5.apply(this, arguments);
-    };
-  }();
-
-  var encryptMessage = /*#__PURE__*/function () {
-    var _ref6 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee6(text, derivedKey) {
-      var encodedText, iv, encryptedData;
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee6$(_context6) {
-        while (1) {
-          switch (_context6.prev = _context6.next) {
-            case 0:
-              encodedText = new TextEncoder().encode(text);
-              iv = window.crypto.getRandomValues(new Uint8Array(12));
-              _context6.next = 4;
-              return window.crypto.subtle.encrypt({
-                name: "AES-GCM",
-                iv: iv.buffer
-              }, derivedKey, encodedText);
-
-            case 4:
-              encryptedData = _context6.sent;
-              return _context6.abrupt("return", {
-                encryptedData: (0,base64_arraybuffer__WEBPACK_IMPORTED_MODULE_4__.encode)(encryptedData),
-                iv: (0,base64_arraybuffer__WEBPACK_IMPORTED_MODULE_4__.encode)(iv.buffer)
-              });
-
-            case 6:
             case "end":
               return _context6.stop();
           }
@@ -2492,97 +2495,144 @@ function Chat(props) {
       }, _callee6);
     }));
 
-    return function encryptMessage(_x5, _x6) {
+    return function deriveKey(_x3, _x4) {
       return _ref6.apply(this, arguments);
     };
   }();
 
-  var decryptMessage = /*#__PURE__*/function () {
-    var _ref7 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee7(messageJSON, derivedKey) {
-      var iv, cipheredText, algorithm, decryptedData, str;
+  var encryptMessage = /*#__PURE__*/function () {
+    var _ref7 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee7(text, derivedKey) {
+      var encodedText, iv, encryptedData;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee7$(_context7) {
         while (1) {
           switch (_context7.prev = _context7.next) {
             case 0:
-              _context7.prev = 0;
+              encodedText = new TextEncoder().encode(text);
+              iv = window.crypto.getRandomValues(new Uint8Array(12));
+              _context7.next = 4;
+              return window.crypto.subtle.encrypt({
+                name: "AES-GCM",
+                iv: iv.buffer
+              }, derivedKey, encodedText);
+
+            case 4:
+              encryptedData = _context7.sent;
+              return _context7.abrupt("return", {
+                encryptedData: (0,base64_arraybuffer__WEBPACK_IMPORTED_MODULE_4__.encode)(encryptedData),
+                iv: (0,base64_arraybuffer__WEBPACK_IMPORTED_MODULE_4__.encode)(iv.buffer)
+              });
+
+            case 6:
+            case "end":
+              return _context7.stop();
+          }
+        }
+      }, _callee7);
+    }));
+
+    return function encryptMessage(_x5, _x6) {
+      return _ref7.apply(this, arguments);
+    };
+  }();
+
+  var decryptMessage = /*#__PURE__*/function () {
+    var _ref8 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee8(messageJSON, derivedKey) {
+      var iv, cipheredText, algorithm, decryptedData, str;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee8$(_context8) {
+        while (1) {
+          switch (_context8.prev = _context8.next) {
+            case 0:
+              _context8.prev = 0;
               iv = (0,base64_arraybuffer__WEBPACK_IMPORTED_MODULE_4__.decode)(messageJSON.iv);
               cipheredText = (0,base64_arraybuffer__WEBPACK_IMPORTED_MODULE_4__.decode)(messageJSON.encryptedData);
               algorithm = {
                 name: "AES-GCM",
                 iv: iv
               };
-              _context7.next = 6;
+              _context8.next = 6;
               return window.crypto.subtle.decrypt(algorithm, derivedKey, cipheredText);
 
             case 6:
-              decryptedData = _context7.sent;
+              decryptedData = _context8.sent;
               str = new TextDecoder().decode(decryptedData);
-              return _context7.abrupt("return", str);
+              return _context8.abrupt("return", str);
 
             case 11:
-              _context7.prev = 11;
-              _context7.t0 = _context7["catch"](0);
-              return _context7.abrupt("return", "error decrypting message: ".concat(_context7.t0));
+              _context8.prev = 11;
+              _context8.t0 = _context8["catch"](0);
+              return _context8.abrupt("return", "error decrypting message: ".concat(_context8.t0));
 
             case 14:
-            case "end":
-              return _context7.stop();
-          }
-        }
-      }, _callee7, null, [[0, 11]]);
-    }));
-
-    return function decryptMessage(_x7, _x8) {
-      return _ref7.apply(this, arguments);
-    };
-  }();
-
-  var sendMessage = /*#__PURE__*/function () {
-    var _ref8 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee8(e) {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee8$(_context8) {
-        while (1) {
-          switch (_context8.prev = _context8.next) {
-            case 0:
-              e.preventDefault();
-              _context8.t0 = (axios__WEBPACK_IMPORTED_MODULE_1___default());
-              _context8.t1 = "/api/chat/".concat(props.user, "/").concat(window.token);
-              _context8.t2 = JSON;
-              _context8.next = 6;
-              return encryptMessage(jquery__WEBPACK_IMPORTED_MODULE_3___default()("#message").val(), derivedKey);
-
-            case 6:
-              _context8.t3 = _context8.sent;
-              _context8.t4 = _context8.t2.stringify.call(_context8.t2, _context8.t3);
-              _context8.t5 = {
-                content: _context8.t4
-              };
-
-              _context8.t0.post.call(_context8.t0, _context8.t1, _context8.t5).then(function () {
-                console.log("message envoyé");
-              });
-
-            case 10:
             case "end":
               return _context8.stop();
           }
         }
-      }, _callee8);
+      }, _callee8, null, [[0, 11]]);
     }));
 
-    return function sendMessage(_x9) {
+    return function decryptMessage(_x7, _x8) {
       return _ref8.apply(this, arguments);
     };
   }();
 
+  var sendMessage = /*#__PURE__*/function () {
+    var _ref9 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee9(e) {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee9$(_context9) {
+        while (1) {
+          switch (_context9.prev = _context9.next) {
+            case 0:
+              e.preventDefault();
+              _context9.t0 = (axios__WEBPACK_IMPORTED_MODULE_1___default());
+              _context9.t1 = "/api/chat/".concat(props.user, "/").concat(window.token);
+              _context9.t2 = JSON;
+              _context9.next = 6;
+              return encryptMessage(jquery__WEBPACK_IMPORTED_MODULE_3___default()("#message").val(), derivedKey);
+
+            case 6:
+              _context9.t3 = _context9.sent;
+              _context9.t4 = _context9.t2.stringify.call(_context9.t2, _context9.t3);
+              _context9.t5 = {
+                content: _context9.t4
+              };
+              _context9.next = 11;
+              return _context9.t0.post.call(_context9.t0, _context9.t1, _context9.t5).then(function () {
+                console.log("message envoyé");
+              });
+
+            case 11:
+              jquery__WEBPACK_IMPORTED_MODULE_3___default()("textarea").val("");
+
+            case 12:
+            case "end":
+              return _context9.stop();
+          }
+        }
+      }, _callee9);
+    }));
+
+    return function sendMessage(_x9) {
+      return _ref9.apply(this, arguments);
+    };
+  }();
+
   (0,react__WEBPACK_IMPORTED_MODULE_2__.useEffect)(function () {
-    console.log(messages);
+    console.log(document.getElementById("listMessages").scrollHeight);
+    jquery__WEBPACK_IMPORTED_MODULE_3___default()("#listMessages").scrollTop(document.getElementById("listMessages").scrollHeight);
   }, [messages]);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
       id: "listMessages",
-      children: messages.map(function (el, idx) {
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
-          children: el.content
+      children: messages.sort(function (el, el2) {
+        return el.date >= el2.date;
+      }).map(function (el, idx) {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+          className: "message ",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+            className: el.login == props.user ? "other" : "you",
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
+              children: el.content
+            })
+          })
         }, idx);
       })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("form", {
@@ -2647,8 +2697,8 @@ function ConversationList(props) {
 
   var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(null),
       _useState4 = _slicedToArray(_useState3, 2),
-      conversationList = _useState4[0],
-      setConversationList = _useState4[1];
+      chat = _useState4[0],
+      selectChat = _useState4[1];
 
   (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(function () {
     return refresh();
@@ -2666,7 +2716,7 @@ function ConversationList(props) {
   };
 
   var addFriend = function addFriend() {
-    var user = prompt("Nom d'utilisateur : ");
+    var user = encodeURI(prompt("Nom d'utilisateur : "));
     axios__WEBPACK_IMPORTED_MODULE_0___default()("/api/addfriend/".concat(user, "/").concat(window.token)).then(function () {
       return alert("Demande envoyée");
     })["catch"](function (e) {
@@ -2674,25 +2724,33 @@ function ConversationList(props) {
     });
   };
 
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
-    children: !conversationList ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
-      children: [conversations.map(function (conversation, idx) {
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
-          onClick: function onClick() {
-            return setConversationList(conversation.login);
-          },
-          children: conversation.login
-        }, idx);
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
-        type: "button",
+  return !chat ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("div", {
+    id: "conversationList",
+    children: [conversations.map(function (conversation, idx) {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("p", {
         onClick: function onClick() {
-          return addFriend();
+          return selectChat(conversation.login);
         },
-        value: "Add"
-      })]
-    }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_Chat__WEBPACK_IMPORTED_MODULE_2__["default"], {
-      user: conversationList
-    })
+        className: "conversation",
+        children: conversation.login
+      }, idx);
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
+      type: "button",
+      onClick: function onClick() {
+        return addFriend();
+      },
+      value: "Add"
+    })]
+  }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("input", {
+      type: "button",
+      value: "Back",
+      onClick: function onClick() {
+        selectChat(null);
+      }
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_Chat__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      user: chat
+    })]
   });
 }
 
@@ -2766,7 +2824,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
 
 
 
@@ -2893,7 +2950,8 @@ function Login(props) {
     };
   }();
 
-  return token == null ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
+  return token == null ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+    id: "login",
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("form", {
       onSubmit: function onSubmit(e) {
         return submit(e);
@@ -2964,6 +3022,11 @@ function PendingInvitationsMenu() {
       pendingInvitations = _useState2[0],
       setPendingInvitations = _useState2[1];
 
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]),
+      _useState4 = _slicedToArray(_useState3, 2),
+      onlineFriends = _useState4[0],
+      setOnlineFriends = _useState4[1];
+
   (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(function () {
     refresh();
   }, []);
@@ -2971,6 +3034,9 @@ function PendingInvitationsMenu() {
   var refresh = function refresh() {
     axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/getpendinginvitations/".concat(window.token)).then(function (data) {
       setPendingInvitations(data.data);
+    });
+    axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/getonlinefriends/".concat(window.token)).then(function (data) {
+      setOnlineFriends(data.data);
     });
     setTimeout(function () {
       return refresh();
@@ -2985,9 +3051,11 @@ function PendingInvitationsMenu() {
     });
   };
 
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
     id: "pendingInvitationsMenu",
-    children: pendingInvitations.map(function (el, idx) {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
+      children: "Pending Invitations"
+    }), pendingInvitations.length > 0 ? pendingInvitations.map(function (el, idx) {
       return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
           children: el.login
@@ -2999,7 +3067,19 @@ function PendingInvitationsMenu() {
           }
         })]
       }, idx);
-    })
+    }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
+        children: "(No pending invitations)"
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
+      children: "Online Friends"
+    }), onlineFriends.map(function (el, idx) {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("span", {
+          children: el.login
+        })
+      }, idx);
+    })]
   });
 }
 
@@ -3183,7 +3263,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 ___CSS_LOADER_EXPORT___.push([module.id, "@import url(https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans&display=swap);"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "* {\n  padding: 0;\n  margin: 0;\n  font-family: \"Plus Jakarta Sans\", sans-serif;\n}\n\nheader {\n  height: 20vh;\n  background-color: deepskyblue;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: 0 5%;\n}\nheader h1 {\n  color: ivory;\n  font-size: 2.5rem;\n}\n\n#loginForm {\n  margin: 5%;\n  padding: 5%;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  border: solid 5px deepskyblue;\n  border-radius: 15px;\n}\n#loginForm input {\n  width: 20%;\n}\n\n#pendingInvitationsMenu {\n  position: fixed;\n  right: 0;\n  bottom: 0;\n  width: 20vw;\n  height: 80vh;\n  background-color: deepskyblue;\n  opacity: 0.8;\n}\n\n#sendMessage {\n  display: flex;\n  position: fixed;\n  bottom: 0;\n  left: 0;\n  width: 80vw;\n  height: 10vh;\n}\n#sendMessage textarea {\n  flex: 4;\n}\n#sendMessage input {\n  flex: 1;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "* {\n  padding: 0;\n  margin: 0;\n  font-family: \"Plus Jakarta Sans\", sans-serif;\n}\n\nheader {\n  height: 20vh;\n  background-color: deepskyblue;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  padding: 0 5%;\n}\nheader h1 {\n  color: ivory;\n  font-size: 2.5rem;\n}\n\n#login {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex-direction: column;\n  padding: 0 20%;\n  height: 80vh;\n}\n\n#loginForm {\n  margin: 5%;\n  padding: 5%;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  border: solid 5px deepskyblue;\n  border-radius: 15px;\n  width: 100%;\n}\n#loginForm input {\n  width: 20%;\n}\n\n#pendingInvitationsMenu {\n  position: fixed;\n  right: 0;\n  bottom: 0;\n  width: 20vw;\n  height: 80vh;\n  background-color: darkcyan;\n  opacity: 0.8;\n  color: ivory;\n}\n\n#sendMessage {\n  display: flex;\n  position: fixed;\n  bottom: 0;\n  left: 0;\n  width: 80vw;\n  height: 10vh;\n}\n#sendMessage textarea {\n  flex: 4;\n}\n#sendMessage input {\n  flex: 1;\n}\n\n#listMessages {\n  height: 70vh;\n  width: 80vw;\n  overflow-y: scroll;\n  overflow-x: hidden;\n}\n#listMessages div {\n  display: flex;\n  padding: 5%;\n  flex-direction: column;\n  border-radius: 15%;\n  color: ivory;\n}\n#listMessages div.you {\n  background-color: red;\n  align-self: flex-start;\n}\n#listMessages div.other {\n  background-color: deepskyblue;\n  align-self: flex-end;\n}\n\n#conversationList {\n  width: 80vw;\n  display: flex;\n  flex-direction: column;\n}\n#conversationList .conversation {\n  background: red;\n  color: ivory;\n  padding: 2% 5%;\n  margin: 2%;\n  flex: 1;\n  cursor: pointer;\n}\n#conversationList input {\n  padding: 2% 5%;\n  margin: 2%;\n  flex: 1;\n  text-align: center;\n  cursor: pointer;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

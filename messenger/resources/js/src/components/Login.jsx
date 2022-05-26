@@ -59,14 +59,14 @@ export default function Login(props){
 
         return( 
         token==null ?
-        <>
+        <div id="login">
         <form onSubmit={(e)=>submit(e)} id="loginForm">
             <input type="text" placeholder="username" name="username" required id="username" />
             <input type="password" placeholder="password" name="password" required id="password" />
             <input type="submit" value="Send" />
         </form>
         <input type="button" onClick={()=>setRegister(!registering)} value={registering ? "Sign in" : "Register"} />
-        </>
+        </div>
         :  props.children
         );
 }

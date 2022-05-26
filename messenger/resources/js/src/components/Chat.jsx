@@ -9,6 +9,8 @@ export default function Chat(props) {
     const [messages, setMessages] = useState([]);
     const [encryptedMessages, setEncryptedMessages] = useState([]);
 
+    $("#listmessages").on()
+
 
     //get Derived Key
     useEffect(async () => {
@@ -22,21 +24,29 @@ export default function Chat(props) {
 
     //get encrypted messages
     const refreshMessages = async function(){
-        console.log("here");
         let data = await axios(`/api/chat/${props.user}/${window.token}`)
         await setEncryptedMessages(data.data);
         
-        setTimeout(() => refreshMessages(), 10000);
+        setTimeout(() => refreshMessages(), 1000);
     }
 
     //decrypt encrypted Messages
-    useEffect(()=>{
-        let result = [];
-        encryptedMessages.map(async (element) => {
-            element.content = await decryptMessage(JSON.parse(element.content), derivedKey);
-            result.push(element);
-        })
-        setMessages(result);
+    useEffect(async ()=>{
+        let result = (await Promise.all(encryptedMessages.map(async function(element){
+            //console.log(result)
+            if(messages.filter(e=>e.id==element.id).length==0){
+                element.content = await decryptMessage(JSON.parse(element.content), derivedKey);
+                return element;
+            }else{return null}
+        }).filter(element => {
+            return element !== null;
+          }))).filter(element => {
+            return element !== null;
+          });
+
+        console.log(result);
+
+        if(result.length >0) setMessages([...messages, ...result]);
     }, [encryptedMessages]);
 
     const deriveKey = async function (publicKeyJwk, privateKeyJwk) {
@@ -117,24 +127,27 @@ export default function Chat(props) {
 
     const sendMessage = async (e) => {
         e.preventDefault();
-        axios.post(`/api/chat/${props.user}/${window.token}`, {
+        await axios.post(`/api/chat/${props.user}/${window.token}`, {
             content: JSON.stringify(await encryptMessage($("#message").val(), derivedKey))
         }).then(() => {
             console.log("message envoyé")
         });
+
+        $("textarea").val("");
     }
 
     useEffect(()=>{
-        console.log(messages);
+        console.log(document.getElementById("listMessages").scrollHeight)
+        $("#listMessages").scrollTop(document.getElementById("listMessages").scrollHeight);
     }, [messages])
 
     return (
         <>
             <div id="listMessages">
-                {messages.map((el, idx) => {
-                    return <p key={idx}>
-                        {el.content}
-                    </p>
+                {messages.sort((el, el2)=>el.date>=el2.date).map((el, idx) => {
+                    return <div key={idx} className="message ">
+                        <div className={el.login==props.user ? "other" : "you"}><p>{el.content}</p></div>
+                    </div>
                 })}
             </div>
             <form id="sendMessage" onSubmit={(e) => sendMessage(e)}>

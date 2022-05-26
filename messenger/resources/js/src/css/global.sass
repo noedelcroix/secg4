@@ -18,7 +18,13 @@ header
         color: ivory
         font-size: 2.5rem
     
-
+#login
+    display: flex
+    align-items: center
+    justify-content: center
+    flex-direction: column
+    padding: 0 20%
+    height: 80vh
 
 #loginForm
     margin: 5%
@@ -29,6 +35,7 @@ header
     justify-content: center
     border: solid 5px deepskyblue
     border-radius: 15px
+    width: 100%
 
     input
         width: 20%
@@ -41,8 +48,9 @@ header
     bottom: 0
     width: 20vw
     height: 80vh
-    background-color: deepskyblue
+    background-color: darkcyan
     opacity: 0.8
+    color: ivory
 
 #sendMessage
     display: flex
@@ -57,3 +65,43 @@ header
     
     input
         flex: 1
+
+#listMessages
+    height: 70vh
+    width: 80vw
+    overflow-y: scroll
+    overflow-x: hidden
+
+    div
+        display: flex
+        padding: 5%
+        flex-direction: column
+        border-radius: 15%
+        color: ivory
+
+        &.you
+            background-color: red
+            align-self: flex-start
+        
+        &.other
+            background-color: deepskyblue
+            align-self: flex-end
+
+#conversationList
+    width: 80vw
+    display: flex
+    flex-direction: column
+    .conversation
+        background: red
+        color: ivory
+        padding: 2% 5%
+        margin: 2%
+        flex: 1
+        cursor: pointer
+
+    input
+        padding: 2% 5%
+        margin: 2%
+        flex:1
+        text-align: center
+        cursor: pointer

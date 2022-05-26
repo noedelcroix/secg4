@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 export default function PendingInvitationsMenu(){
 
     const [pendingInvitations, setPendingInvitations] = useState([]);
+    const [onlineFriends, setOnlineFriends] = useState([]);
 
     useEffect(()=>{
         refresh();
@@ -14,6 +15,10 @@ export default function PendingInvitationsMenu(){
             setPendingInvitations(data.data);
     });
 
+    axios.get(`/api/getonlinefriends/${window.token}`).then((data)=>{
+        setOnlineFriends(data.data);
+});
+
     setTimeout(()=>refresh(), 5000);
 }
 
@@ -23,8 +28,13 @@ export default function PendingInvitationsMenu(){
 
     return(
         <div id="pendingInvitationsMenu">
-            {pendingInvitations.map((el, idx)=>
+            <h2>Pending Invitations</h2>
+            {pendingInvitations.length > 0 ? pendingInvitations.map((el, idx)=>
                 <div key={idx}><span>{el.login}</span><input type="button" value="Accepter" onClick={()=>acceptInvitationAction(el.login)} /></div>
+            ) : <div><span>(No pending invitations)</span></div>}
+            <h2>Online Friends</h2>
+            {onlineFriends.map((el, idx)=>
+                <div key={idx}><span>{el.login}</span></div>
             )}
         </div>
     )
