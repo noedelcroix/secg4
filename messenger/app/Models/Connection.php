@@ -19,7 +19,7 @@ class Connection{
         if(count($user)==0){
             throw new Exception('no token found');
         }
-        \DB::update('UPDATE users SET token = NULL where id = ?'[$user[0]->id]);
+        \DB::update('UPDATE users SET token = NULL where id = ?', [$user[0]->id]);
     }
     public static function newUser($login, $pwd){
         /**

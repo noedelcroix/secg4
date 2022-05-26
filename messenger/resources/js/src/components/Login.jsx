@@ -10,8 +10,8 @@ export default function Login(props){
     window.setToken = setToken;
     window.token = token;
 
-    window.logout = ()=>{
-        axios(`/api/logout/${token}`);
+    const logout = ()=>{
+        axios(`/api/deconnect/${token}`);
         setToken(null);
     }
 
@@ -46,7 +46,7 @@ export default function Login(props){
             if(registering){
                 alert("Enregistrement réussi.");
             }
-        }).catch(()=>alert("Une erreur s'est produite. Veuillez réessayer plus tard."));
+        }).catch(()=>alert("Le nom d'utilisateur n'existe pas ou la connexion avec le serveur n'a pas pu être établie."));
 
         if(!registering){
         await axios.post(`/api/publickey`, {
@@ -67,7 +67,10 @@ export default function Login(props){
         </form>
         <input type="button" onClick={()=>setRegister(!registering)} value={registering ? "Sign in" : "Register"} />
         </div>
-        :  props.children
+        :  <>
+        <input type="button" onClick={()=>logout()} value="⏼" />
+        {props.children}
+        </>
         );
 }
     

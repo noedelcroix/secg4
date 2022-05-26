@@ -11,14 +11,16 @@ export default function ConversationList(props){
     const refresh = ()=>{
         axios(`/api/getfriends/${window.token}`).then((data)=>{
             setConversations(data.data);
-        }).catch(()=>alert("Une erreur est survenue..."));
+        }).catch(()=>{});
 
+        if(window.token){
         setTimeout(()=>refresh(), 5000);
+        }
     }
 
     const addFriend=()=>{
         let user = encodeURI(prompt("Nom d'utilisateur : "));
-        axios(`/api/addfriend/${user}/${window.token}`).then(()=>alert("Demande envoyée")).catch((e)=>alert("Une erreur est survenue..."));
+        axios(`/api/addfriend/${user}/${window.token}`).then(()=>alert("Demande envoyée")).catch((e)=>{if(window.token) alert("Une erreur est survenue...");});
     }
 
     return (

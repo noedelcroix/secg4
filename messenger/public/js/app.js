@@ -2254,7 +2254,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var base64_arraybuffer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! base64-arraybuffer */ "./node_modules/base64-arraybuffer/dist/base64-arraybuffer.es5.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var sha256__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! sha256 */ "./node_modules/sha256/lib/sha256.js");
+/* harmony import */ var sha256__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(sha256__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -2280,6 +2282,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 
 
 
@@ -2374,9 +2377,11 @@ function Chat(props) {
               return setEncryptedMessages(data.data);
 
             case 5:
-              setTimeout(function () {
-                return refreshMessages();
-              }, 1000);
+              if (window.token) {
+                setTimeout(function () {
+                  return refreshMessages();
+                }, 1000);
+              }
 
             case 6:
             case "end":
@@ -2417,7 +2422,7 @@ function Chat(props) {
 
                       case 3:
                         element.content = _context4.sent;
-                        return _context4.abrupt("return", element);
+                        return _context4.abrupt("return", element.content ? element : null);
 
                       case 7:
                         return _context4.abrupt("return", null);
@@ -2441,10 +2446,9 @@ function Chat(props) {
             result = _context5.sent.filter(function (element) {
               return element !== null;
             });
-            console.log(result);
             if (result.length > 0) setMessages([].concat(_toConsumableArray(messages), _toConsumableArray(result)));
 
-          case 5:
+          case 4:
           case "end":
             return _context5.stop();
         }
@@ -2507,22 +2511,26 @@ function Chat(props) {
         while (1) {
           switch (_context7.prev = _context7.next) {
             case 0:
+              text = text.replace("###SHAPRINT###", "");
+              text += "###SHAPRINT###" + sha256__WEBPACK_IMPORTED_MODULE_5___default()(text, {
+                asString: true
+              });
               encodedText = new TextEncoder().encode(text);
               iv = window.crypto.getRandomValues(new Uint8Array(12));
-              _context7.next = 4;
+              _context7.next = 6;
               return window.crypto.subtle.encrypt({
                 name: "AES-GCM",
                 iv: iv.buffer
               }, derivedKey, encodedText);
 
-            case 4:
+            case 6:
               encryptedData = _context7.sent;
               return _context7.abrupt("return", {
                 encryptedData: (0,base64_arraybuffer__WEBPACK_IMPORTED_MODULE_4__.encode)(encryptedData),
                 iv: (0,base64_arraybuffer__WEBPACK_IMPORTED_MODULE_4__.encode)(iv.buffer)
               });
 
-            case 6:
+            case 8:
             case "end":
               return _context7.stop();
           }
@@ -2537,7 +2545,7 @@ function Chat(props) {
 
   var decryptMessage = /*#__PURE__*/function () {
     var _ref8 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee8(messageJSON, derivedKey) {
-      var iv, cipheredText, algorithm, decryptedData, str;
+      var iv, cipheredText, algorithm, decryptedData, str, checksum;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee8$(_context8) {
         while (1) {
           switch (_context8.prev = _context8.next) {
@@ -2555,19 +2563,36 @@ function Chat(props) {
             case 6:
               decryptedData = _context8.sent;
               str = new TextDecoder().decode(decryptedData);
-              return _context8.abrupt("return", str);
+              checksum = str.split("###SHAPRINT###");
 
-            case 11:
-              _context8.prev = 11;
+              if (!(checksum[1] === sha256__WEBPACK_IMPORTED_MODULE_5___default()(checksum[0], {
+                asString: true
+              }))) {
+                _context8.next = 14;
+                break;
+              }
+
+              console.log(checksum[1]);
+              return _context8.abrupt("return", checksum[0]);
+
+            case 14:
+              return _context8.abrupt("return", null);
+
+            case 15:
+              _context8.next = 20;
+              break;
+
+            case 17:
+              _context8.prev = 17;
               _context8.t0 = _context8["catch"](0);
               return _context8.abrupt("return", "error decrypting message: ".concat(_context8.t0));
 
-            case 14:
+            case 20:
             case "end":
               return _context8.stop();
           }
         }
-      }, _callee8, null, [[0, 11]]);
+      }, _callee8, null, [[0, 17]]);
     }));
 
     return function decryptMessage(_x7, _x8) {
@@ -2616,35 +2641,34 @@ function Chat(props) {
   }();
 
   (0,react__WEBPACK_IMPORTED_MODULE_2__.useEffect)(function () {
-    console.log(document.getElementById("listMessages").scrollHeight);
     jquery__WEBPACK_IMPORTED_MODULE_3___default()("#listMessages").scrollTop(document.getElementById("listMessages").scrollHeight);
   }, [messages]);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
       id: "listMessages",
       children: messages.sort(function (el, el2) {
         return el.date >= el2.date;
       }).map(function (el, idx) {
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
           className: "message ",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
             className: el.login == props.user ? "other" : "you",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("p", {
               children: el.content
             })
           })
         }, idx);
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("form", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("form", {
       id: "sendMessage",
       onSubmit: function onSubmit(e) {
         return sendMessage(e);
       },
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("textarea", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("textarea", {
         id: "message",
         cols: "30",
         rows: "10"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("input", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("input", {
         type: "submit",
         value: "Envoyer",
         disabled: !derivedKey
@@ -2707,12 +2731,13 @@ function ConversationList(props) {
   var refresh = function refresh() {
     axios__WEBPACK_IMPORTED_MODULE_0___default()("/api/getfriends/".concat(window.token)).then(function (data) {
       setConversations(data.data);
-    })["catch"](function () {
-      return alert("Une erreur est survenue...");
-    });
-    setTimeout(function () {
-      return refresh();
-    }, 5000);
+    })["catch"](function () {});
+
+    if (window.token) {
+      setTimeout(function () {
+        return refresh();
+      }, 5000);
+    }
   };
 
   var addFriend = function addFriend() {
@@ -2720,7 +2745,7 @@ function ConversationList(props) {
     axios__WEBPACK_IMPORTED_MODULE_0___default()("/api/addfriend/".concat(user, "/").concat(window.token)).then(function () {
       return alert("Demande envoyée");
     })["catch"](function (e) {
-      return alert("Une erreur est survenue...");
+      if (window.token) alert("Une erreur est survenue...");
     });
   };
 
@@ -2769,18 +2794,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
-
 function Header() {
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("header", {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("h1", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("header", {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("h1", {
       children: "Messenger"
-    }), window.token ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("input", {
-      type: "button",
-      onClick: function onClick() {
-        return window.logout();
-      },
-      value: "\u23FC"
-    }) : null]
+    })
   });
 }
 
@@ -2831,6 +2849,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
+
 function Login(props) {
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(null),
       _useState2 = _slicedToArray(_useState, 2),
@@ -2845,8 +2864,8 @@ function Login(props) {
   window.setToken = setToken;
   window.token = token;
 
-  window.logout = function () {
-    axios__WEBPACK_IMPORTED_MODULE_2___default()("/api/logout/".concat(token));
+  var logout = function logout() {
+    axios__WEBPACK_IMPORTED_MODULE_2___default()("/api/deconnect/".concat(token));
     setToken(null);
   };
 
@@ -2920,7 +2939,7 @@ function Login(props) {
                   alert("Enregistrement réussi.");
                 }
               })["catch"](function () {
-                return alert("Une erreur s'est produite. Veuillez réessayer plus tard.");
+                return alert("Le nom d'utilisateur n'existe pas ou la connexion avec le serveur n'a pas pu être établie.");
               });
 
             case 5:
@@ -2980,7 +2999,15 @@ function Login(props) {
       },
       value: registering ? "Sign in" : "Register"
     })]
-  }) : props.children;
+  }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("input", {
+      type: "button",
+      onClick: function onClick() {
+        return logout();
+      },
+      value: "\u23FC"
+    }), props.children]
+  });
 }
 
 /***/ }),
@@ -3038,16 +3065,19 @@ function PendingInvitationsMenu() {
     axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/getonlinefriends/".concat(window.token)).then(function (data) {
       setOnlineFriends(data.data);
     });
-    setTimeout(function () {
-      return refresh();
-    }, 5000);
+
+    if (window.token) {
+      setTimeout(function () {
+        return refresh();
+      }, 5000);
+    }
   };
 
   var acceptInvitationAction = function acceptInvitationAction(user) {
     axios__WEBPACK_IMPORTED_MODULE_0___default()("/api/addfriend/".concat(user, "/").concat(window.token)).then(function () {
       return alert("Invitation acceptée");
     })["catch"](function (e) {
-      return alert("Une erreur est survenue...");
+      if (window.token) alert("Une erreur est survenue...");
     });
   };
 

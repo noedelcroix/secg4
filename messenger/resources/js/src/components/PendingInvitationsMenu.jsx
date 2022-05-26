@@ -19,11 +19,13 @@ export default function PendingInvitationsMenu(){
         setOnlineFriends(data.data);
 });
 
+    if(window.token){
     setTimeout(()=>refresh(), 5000);
+    }
 }
 
     const acceptInvitationAction = (user)=>{
-        axios(`/api/addfriend/${user}/${window.token}`).then(()=>alert("Invitation acceptée")).catch((e)=>alert("Une erreur est survenue..."));
+        axios(`/api/addfriend/${user}/${window.token}`).then(()=>alert("Invitation acceptée")).catch((e)=>{if(window.token) alert("Une erreur est survenue...");});
     }
 
     return(

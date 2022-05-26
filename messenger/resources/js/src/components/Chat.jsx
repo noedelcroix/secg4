@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react"
 import $ from "jquery";
 import { decode, encode } from "base64-arraybuffer";
+import sha256 from "sha256";
 
 export default function Chat(props) {
 
@@ -27,24 +28,23 @@ export default function Chat(props) {
         let data = await axios(`/api/chat/${props.user}/${window.token}`)
         await setEncryptedMessages(data.data);
         
+        if(window.token){
         setTimeout(() => refreshMessages(), 1000);
+        }
     }
 
     //decrypt encrypted Messages
     useEffect(async ()=>{
         let result = (await Promise.all(encryptedMessages.map(async function(element){
-            //console.log(result)
             if(messages.filter(e=>e.id==element.id).length==0){
                 element.content = await decryptMessage(JSON.parse(element.content), derivedKey);
-                return element;
+                return element.content ? element : null;
             }else{return null}
         }).filter(element => {
             return element !== null;
           }))).filter(element => {
             return element !== null;
           });
-
-        console.log(result);
 
         if(result.length >0) setMessages([...messages, ...result]);
     }, [encryptedMessages]);
@@ -84,6 +84,9 @@ export default function Chat(props) {
     };
 
     const encryptMessage = async function (text, derivedKey) {
+        text = text.replace("###SHAPRINT###", "");
+
+        text+="###SHAPRINT###"+sha256(text, {asString: true});
         const encodedText = new TextEncoder().encode(text);
         let iv = window.crypto.getRandomValues(new Uint8Array(12));
         const encryptedData = await window.crypto.subtle.encrypt({
@@ -119,7 +122,15 @@ export default function Chat(props) {
 
             const str = new TextDecoder().decode(decryptedData);
 
-            return str;
+            let checksum = str.split("###SHAPRINT###");
+
+            if(checksum[1]===sha256(checksum[0], {asString: true})){
+                console.log(checksum[1]);
+                return checksum[0];
+            }else{
+                return null;
+            }
+            
         } catch (e) {
             return `error decrypting message: ${e}`;
         }
@@ -137,7 +148,6 @@ export default function Chat(props) {
     }
 
     useEffect(()=>{
-        console.log(document.getElementById("listMessages").scrollHeight)
         $("#listMessages").scrollTop(document.getElementById("listMessages").scrollHeight);
     }, [messages])
 
