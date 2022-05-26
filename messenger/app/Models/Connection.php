@@ -37,7 +37,12 @@ class Connection{
         if(count($user)==0){
             throw new Exception('no token found');
         }
+
+        $foundPublic = \DB::select('select * from user_keys where id = ?',[$user[0]->id]);
+
+        if(count($foundPublic)==0){
         \DB::insert("INSERT INTO `user_keys`(id,public_key) VALUES(?,?)",[$user[0]->id, $publickey]);
+        }
     }
     public static function getKey($login){
         $user = \DB::select('select id from users where login = ?',[$login]);

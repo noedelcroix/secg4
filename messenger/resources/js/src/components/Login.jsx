@@ -20,6 +20,7 @@ export default function Login(props){
     }, [])
 
     const genKeyPair = async function () {
+        if(localStorage.getItem("public_key") && localStorage.getItem("private_key")) return;
         const keyPair = await window.crypto.subtle.generateKey({
                 name: "ECDH",
                 namedCurve: "P-256",
@@ -40,7 +41,6 @@ export default function Login(props){
         const password = sha256($("#password").val(), {asString: true});
 
         await axios.post(`/api/${!registering ? "auth" : "createaccount"}`, {login: username, pswd: password}).then((data)=>{
-            console.log(data.data.token);
             setToken(data.data.token);
         }).then(()=>{
             if(registering){
@@ -48,10 +48,12 @@ export default function Login(props){
             }
         }).catch(()=>alert("Une erreur s'est produite. Veuillez réessayer plus tard."));
 
+        if(!registering){
         await axios.post(`/api/publickey`, {
             token: window.token,
             key: localStorage.getItem("public_key")
         }).then(()=>console.log("clé envoyée.")).catch((e)=>{})
+    }
 
     }
 
