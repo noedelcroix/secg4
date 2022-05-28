@@ -19,7 +19,8 @@ class MessageController{
     public static function postMessage($user, $token, Request $request){
         try {
             $content = $request->post("content");
-            Message::postMessage($token,$user,$content);
+            $replayNumber = $request->post("replayNumber");
+            Message::postMessage($token,$user,$content, $replayNumber);
         } catch (Exception $ex) {
             return response()->json(false, 500);
         }

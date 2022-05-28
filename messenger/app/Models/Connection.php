@@ -8,8 +8,9 @@ class Connection{
         $checkPswd = \DB::select('select password,id, errors from users where login = ?',[$login]);
         if ($checkPswd[0]->errors <= 3 && password_verify($pswd, $checkPswd[0]->password)) {
             $token = (String) Str::uuid();
-            \DB::update('UPDATE users SET errors=0, token = ? where id = ?', [$token,$checkPswd[0]->id]);
-            return $token;
+            $replayNumber=rand(0, 255);
+            \DB::update('UPDATE users SET errors=0, counter = ?, token = ? where id = ?', [$replayNumber, $token, $checkPswd[0]->id]);
+            return ['token'=>$token, 'replayNumber'=>$replayNumber];
         } else {
             \DB::update('update users set errors = ? where login = ?', [$checkPswd[0]->errors+1, $login]);
             throw new Exception('auth failure');
@@ -50,6 +51,7 @@ class Connection{
         if(count($user)==0){
             throw new Exception('no token found');
         }
+        
         $key = \DB::select('select public_key from user_keys where id = ?',[$user[0]->id]);
         return $key;
     }

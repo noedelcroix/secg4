@@ -138,8 +138,10 @@ export default function Chat(props) {
 
     const sendMessage = async (e) => {
         e.preventDefault();
+        window.replayNumber = (window.replayNumber+=1)%255;
         await axios.post(`/api/chat/${props.user}/${window.token}`, {
-            content: JSON.stringify(await encryptMessage($("#message").val(), derivedKey))
+            content: JSON.stringify(await encryptMessage($("#message").val(), derivedKey)),
+            replayNumber: window.replayNumber
         }).then(() => {
             console.log("message envoyé")
         });

@@ -2607,27 +2607,30 @@ function Chat(props) {
           switch (_context9.prev = _context9.next) {
             case 0:
               e.preventDefault();
+              window.replayNumber = (window.replayNumber += 1) % 255;
               _context9.t0 = (axios__WEBPACK_IMPORTED_MODULE_1___default());
               _context9.t1 = "/api/chat/".concat(props.user, "/").concat(window.token);
               _context9.t2 = JSON;
-              _context9.next = 6;
+              _context9.next = 7;
               return encryptMessage(jquery__WEBPACK_IMPORTED_MODULE_3___default()("#message").val(), derivedKey);
 
-            case 6:
+            case 7:
               _context9.t3 = _context9.sent;
               _context9.t4 = _context9.t2.stringify.call(_context9.t2, _context9.t3);
-              _context9.t5 = {
-                content: _context9.t4
+              _context9.t5 = window.replayNumber;
+              _context9.t6 = {
+                content: _context9.t4,
+                replayNumber: _context9.t5
               };
-              _context9.next = 11;
-              return _context9.t0.post.call(_context9.t0, _context9.t1, _context9.t5).then(function () {
+              _context9.next = 13;
+              return _context9.t0.post.call(_context9.t0, _context9.t1, _context9.t6).then(function () {
                 console.log("message envoyé");
               });
 
-            case 11:
+            case 13:
               jquery__WEBPACK_IMPORTED_MODULE_3___default()("textarea").val("");
 
-            case 12:
+            case 14:
             case "end":
               return _context9.stop();
           }
@@ -2933,7 +2936,10 @@ function Login(props) {
                 login: username,
                 pswd: password
               }).then(function (data) {
-                setToken(data.data.token);
+                if (!registering) {
+                  setToken(data.data.token.token);
+                  window.replayNumber = data.data.token.replayNumber;
+                }
               }).then(function () {
                 if (registering) {
                   alert("Enregistrement réussi.");

@@ -7,6 +7,7 @@ class Message{
         if(count($user2)==0){
             throw new Exception('no token found');
         }
+        
         $friends = \DB::select('select user1, user2 from friends join users on user2=users.id where users.login = ? and user1 = ?',[$user,$user2[0]->id]);
         if(count($friends)!=0)
             return \DB::select('select messages.id, sndr.login,rciver.login,content,date from messages join users sndr on messages.sender=sndr.id join 
@@ -15,15 +16,19 @@ class Message{
             throw new Exception('no friend found');
     }
 
-    public static function postMessage($token,$receiver,$content){
-        $user = \DB::select('select id from users where token = ?',[$token]);
+    public static function postMessage($token,$receiver,$content, $replayNumber){
+        $user = \DB::select('select id, counter from users where token = ? AND counter = ?',[$token, $replayNumber-1]);
         $receiverId = \DB::select('select id from users where login = ?',[$receiver]);
         if(count($user)==0){
             throw new Exception('no token found');
         }
+
         if(count($receiverId)==0){
             throw new Exception('no receiver id found');
         }
+
+        \DB::update("update users set counter=? where id=?", [$user[0]->counter+1, $user[0]->id]);
+        
         $friends = \DB::select('select user1, user2 from friends join users on user2=users.id where users.login = ? and user1 = ?',[$receiver,$user[0]->id]);
         $date = date('d-m-y h:i:s');
         if(count($friends)!=0)

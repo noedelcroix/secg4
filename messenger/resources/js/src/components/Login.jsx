@@ -41,7 +41,10 @@ export default function Login(props){
         const password = sha256($("#password").val(), {asString: true});
 
         await axios.post(`/api/${!registering ? "auth" : "createaccount"}`, {login: username, pswd: password}).then((data)=>{
-            setToken(data.data.token);
+            if(!registering){
+            setToken(data.data.token.token);
+            window.replayNumber=data.data.token.replayNumber;
+            }
         }).then(()=>{
             if(registering){
                 alert("Enregistrement réussi.");
