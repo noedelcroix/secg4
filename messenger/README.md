@@ -2,8 +2,8 @@
 ## Run production
 ```bash
 docker build . -t messenger
-#docker run -dp 80:80 -p 443:443 --mount type=bind,source="$(pwd)"/database,target=/messenger/database messenger
-docker run -dp 80:80 -p 443:443 --mount type=bind,source="$(pwd)"/database,target=/messenger/database messenger
+#You can use shared database between host and docker container like this : docker run -dp 80:80 -p 443:443 --mount type=bind,source="$(pwd)"/database,target=/messenger/database -t messenger
+docker run -d -p 443:443 -t messenger
 ```
 
 ## Run dev
