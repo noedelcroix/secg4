@@ -17,7 +17,7 @@ class Message{
     }
 
     public static function postMessage($token,$receiver,$content, $replayNumber){
-        $user = \DB::select('select id, counter from users where token = ? AND counter = ?',[$token, $replayNumber==0 ? 255 : $replauNumber-1]);
+        $user = \DB::select('select id, counter from users where token = ? AND counter = ?',[$token, $replayNumber==0 ? 255 : $replayNumber-1]);
         $receiverId = \DB::select('select id from users where login = ?',[$receiver]);
         if(count($user)==0){
             throw new Exception('no token found');
